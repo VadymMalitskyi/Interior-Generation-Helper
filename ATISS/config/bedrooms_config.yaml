@@ -1,7 +1,7 @@
 data:
     dataset_type: "cached_threedfront"
     encoding_type: "cached_autoregressive_wocm"
-    dataset_directory: "/media/paschalidoud/goproorgohome/3D_FRONT_processed/bedrooms"
+    dataset_directory: "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/processed_data/threed_front_bedroom"
     annotation_file: "../config/bedroom_threed_front_splits.csv"
     path_to_invalid_scene_ids: "../config/invalid_threed_front_rooms.txt"
     path_to_invalid_bbox_jids: "../config/black_list.txt"
@@ -12,7 +12,7 @@ data:
 
 network:
     type: "autoregressive_transformer"
-    n_layers: 4
+    n_layers: 3
     n_heads: 8
     query_dimensions: 64
     value_dimensions: 64

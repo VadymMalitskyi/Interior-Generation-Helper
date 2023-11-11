@@ -1,0 +1,23 @@
+# preprocess data
+python preprocess_data.py "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/processed_data/threed_front_bedroom" "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/raw_data/3D-FRONT" "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/raw_data/3D-FUTURE-model" "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/raw_data/3D-FUTURE-model/model_info.json" "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/demo/floor_plan_texture_images" --dataset_filtering threed_front_bedroom
+
+python render_threedfront_scene.py "MasterBedroom-8583" "/home/vadym_wsl/projects/ATISS/output_dir" "/home/vadym_wsl/projects/3d_front_dataset/archives/3D-FRONT" "/home/vadym_wsl/projects/3d_front_dataset/archives/3D-FUTURE-model" "/home/vadym_wsl/projects/3d_front_dataset/archives/3D-FUTURE-model/model_info.json" "/home/vadym_wsl/projects/ATISS/demo/floor_plan_texture_images"
+
+PATH_TO_SCENES="/home/vadym_wsl/projects/ATISS/threed_front.pkl" python preprocess_data.py "/home/vadym_wsl/projects/ATISS/data/processed_data/threed_front_diningroom" "/home/vadym_wsl/projects/ATISS/data/raw_data/3D-FRONT" "/home/vadym_wsl/projects/ATISS/data/raw_data/3D-FUTURE-model" "/home/vadym_wsl/projects/ATISS/data/raw_data/3D-FUTURE-model/model_info.json" "/home/vadym_wsl/projects/ATISS/demo/floor_plan_texture_images" --annotation_file ../config/diningroom_threed_front_splits.csv --dataset_filtering threed_front_diningroom --room_side 6.2
+
+PATH_TO_SCENES="/home/vadym_wsl/projects/ATISS/threed_front.pkl" python preprocess_data.py "/home/vadym_wsl/projects/ATISS/data/processed_data/threed_front_library" "/home/vadym_wsl/projects/ATISS/data/raw_data/3D-FRONT" "/home/vadym_wsl/projects/ATISS/data/raw_data/3D-FUTURE-model" "/home/vadym_wsl/projects/ATISS/data/raw_data/3D-FUTURE-model/model_info.json" "/home/vadym_wsl/projects/ATISS/demo/floor_plan_texture_images" --annotation_file ../config/library_threed_front_splits.csv --dataset_filtering threed_front_library
+
+# 3D future pickle
+PATH_TO_SCENES="/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/threed_front.pkl" python pickle_threed_future_dataset.py "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/pickled_threed_future/threed_front_bedroom" "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/raw_data/3D-FRONT" "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/raw_data/3D-FUTURE-model" "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/raw_data/3D-FUTURE-model/model_info.json" --annotation_file "../config/bedroom_threed_front_splits.csv" --dataset_filtering threed_front_bedroom
+
+# visualize scene
+PATH_TO_SCENES="/home/vadym_wsl/projects/ATISS/threed_front.pkl" python render_threedfront_scene.py "MasterBedroom-8583" "/home/vadym_wsl/projects/ATISS/visualizations" "/home/vadym_wsl/projects/ATISS/data/raw_data/3D-FRONT" "/home/vadym_wsl/projects/ATISS/data/raw_data/3D-FUTURE-model" "/home/vadym_wsl/projects/ATISS/data/raw_data/3D-FUTURE-model/model_info.json" "/home/vadym_wsl/projects/ATISS/demo/floor_plan_texture_images" --annotation_file "../config/bedroom_threed_front_splits.csv" --with_floor_layout --with_walls --with_door_and_windows --with_texture
+
+# train model
+PATH_TO_SCENES="/home/vadym_wsl/projects/ATISS/threed_front.pkl" python train_network.py "/home/vadym_wsl/projects/ATISS/config/bedrooms_config.yaml" "/home/vadym_wsl/projects/ATISS/output_dir" --with_wandb_logger --n_processes 12
+
+# scene generation
+python generate_scenes.py "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/config/bedrooms_config.yaml" "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/visualizations" "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/pickled_threed_future/threed_front_bedroom/threed_future_model_bedroom.pkl" "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/demo/floor_plan_texture_images" --weight_file "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/output_dir/L1F6VFKD0/model_01000"
+
+# failure correction
+python failure_correction.py "/home/vadym_wsl/projects/ATISS/config/bedrooms_config.yaml" "/home/vadym_wsl/projects/ATISS/visualizations" "/home/vadym_wsl/projects/ATISS/data/pickled_threed_future/threed_front_bedroom/threed_future_model_bedroom.pkl" "/home/vadym_wsl/projects/ATISS/demo/floor_plan_texture_images" --weight_file "/home/vadym_wsl/projects/ATISS/output_dir/L1F6VFKD0/model_01000"

@@ -10,8 +10,9 @@ dependencies:
   - pyrr=0.10.3
   - pyyaml=5.3.1
   - python=3.8
-  - pytorch=1.6.0
-  - torchvision=0.7.0
+  - pytorch=1.10.0
+  - torchvision=0.10.0
+  - cudatoolkit=11.3
   - pillow=7.2.0
   - scipy=1.5.2
   - tqdm=4.50.2
@@ -19,5 +20,7 @@ dependencies:
   - matplotlib=3.3.1
   - wxpython=4.0.7
   - pip:
-    - simple_3dviz==0.4.0
-    - pytorch-fast-transformers==0.4.0
+    - git+https://github.com/angeloskath/simple-3dviz.git
+    - git+https://github.com/idiap/fast-transformers.git
+    - fastapi==0.104.1
+    - uvicorn==0.24.0.post1
