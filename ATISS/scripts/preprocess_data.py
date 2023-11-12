@@ -187,6 +187,7 @@ def main(argv):
         dataset_directory=args.path_to_3d_front_dataset_directory,
         path_to_model_info=args.path_to_model_info,
         path_to_models=args.path_to_3d_future_dataset_directory,
+        path_to_bounds=None,
         filter_fn=filter_function(
             config, ["train", "val", "test"], args.without_lamps
         )

@@ -11,9 +11,11 @@ import argparse
 import logging
 import os
 import sys
+import time
 
 import numpy as np
 import torch
+import trimesh
 
 from training_utils import load_config
 from utils import floor_plan_from_scene, export_scene
@@ -121,6 +123,11 @@ def main(argv):
         "--scene_id",
         default=None,
         help="The scene id to be used for conditioning"
+    )
+    parser.add_argument(
+        "--file_save_name",
+        default=int(time.time()),
+        help="The name of the file to be saved"
     )
 
     args = parser.parse_args(argv)
@@ -272,6 +279,12 @@ def main(argv):
             if not os.path.exists(path_to_objs):
                 os.mkdir(path_to_objs)
             export_scene(path_to_objs, trimesh_meshes)
+            combined = trimesh.util.concatenate(trimesh_meshes)
+            combined.export(
+                os.path.join(
+                    path_to_objs,
+                    f"{args.output_directory}/{args.file_save_name}.glb"),
+            file_type='glb')
 
 
 if __name__ == "__main__":
