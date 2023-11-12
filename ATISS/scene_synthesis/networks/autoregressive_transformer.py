@@ -220,6 +220,7 @@ class AutoregressiveTransformer(BaseAutoregressiveTransformer):
             "angles": angles
         }
 
+    # TODO: Place to do customization of number of furniture of each class
     @torch.no_grad()
     def generate_boxes(self, room_mask, max_boxes=32, device="cpu"):
         boxes = self.start_symbol(device)
