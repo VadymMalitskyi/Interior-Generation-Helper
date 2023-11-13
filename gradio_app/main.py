@@ -38,8 +38,9 @@ import time
 #    }
 
 # Function to download and save the 3D model
-def download_3d_model(save_path):
-    response = requests.get("http://127.0.0.1:8000/generate_room")
+def download_3d_model(save_path, style):
+    json = {"style": style}
+    response = requests.post("http://127.0.0.1:8000/generate_room", json=json)
     if response.status_code == 200:
         with open(save_path, 'wb') as f:
             f.write(response.content)
@@ -47,9 +48,13 @@ def download_3d_model(save_path):
     return False
 
 # Gradio interface function
-def visualize_3d_model(text):
+def visualize_3d_model(room_type, style, n_beds, n_chairs):
+    print(f"Room type: {room_type}")
+    print(f"Style: {style}")
+    print(f"Number of beds: {n_beds}")
+    print(f"Number of chairs: {n_chairs}")
     filepath = f"created_models/{int(time.time())}.glb"
-    if download_3d_model(save_path=filepath):
+    if download_3d_model(save_path=filepath, style=style):
         return gr.Model3D(filepath)
     else:
         return "Failed to download 3D model."
@@ -57,7 +62,16 @@ def visualize_3d_model(text):
 
 demo = gr.Interface(
     fn=visualize_3d_model,
-    inputs=gr.Textbox(label="3D Model URL"),
+    inputs=[
+        gr.Dropdown(["bedroom", "living_room"], label="Room Type"),
+        gr.Dropdown(['Light Luxury', 'Modern', 'Japanese', 
+                     'Southeast Asia', 'Nordic', 'Korean', 
+                     'Mediterranean', 'New Chinese', 'Vintage/Retro', 
+                     'Neoclassical', 'American Country', 
+                     'Ming Qing', 'Minimalist', 'Industrial', 'No style'], label="Style"),
+        gr.Slider(1, 10, step=1, label="Number of Beds"),
+        gr.Slider(1, 10, step=1, label="Number of Chairs"),
+    ],
     outputs=gr.Model3D(),
     title="3D Model Visualizer",
     description="Enter the URL of a 3D model to visualize.",

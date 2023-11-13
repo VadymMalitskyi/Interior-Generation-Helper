@@ -4,12 +4,15 @@ import time
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import FileResponse
 from pathlib import Path
+from pydantic import BaseModel
 
 app = FastAPI()
 
+class GenerationConfig(BaseModel):
+    style: str
 
-@app.get("/generate_room")
-def generate_room():  # file: UploadFile = File(...)
+@app.post("/generate_room")
+def generate_room(generation_config: GenerationConfig):  # file: UploadFile = File(...)
     try:
         file_name = str(int(time.time()))
         script_name = '/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/scripts/generate_scenes.py'
@@ -25,6 +28,7 @@ def generate_room():  # file: UploadFile = File(...)
             "--n_sequences", "1",
             "--without_screen",
             "--file_save_name", file_name,
+            "--required_style", generation_config.style,
         ]
 
         # Run the script with subprocess

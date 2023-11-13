@@ -13,7 +13,7 @@ import trimesh
 from simple_3dviz.renderables.textured_mesh import Material, TexturedMesh
 
 
-def get_textured_objects(bbox_params_t, objects_dataset, classes):
+def get_textured_objects(bbox_params_t, objects_dataset, classes, query_style="No style"):
     # For each one of the boxes replace them with an object
     renderables = []
     lines_renderables = []
@@ -22,7 +22,7 @@ def get_textured_objects(bbox_params_t, objects_dataset, classes):
         query_size = bbox_params_t[0, j, -4:-1]
         query_label = classes[bbox_params_t[0, j, :-7].argmax(-1)]
         furniture = objects_dataset.get_closest_furniture_to_box(
-            query_label, query_size
+            query_label, query_size, query_style=query_style
         )
 
         # Load the furniture and scale it as it is given in the dataset

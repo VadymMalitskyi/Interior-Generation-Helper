@@ -50,6 +50,10 @@ class args:
     camera_target = (0., 0., 0.)
     camera_position = (-0.10923499, 1.9325259, -7.19009)
     scene_id = None
+    required_style = "Ming Qing"
+    with_rotating_camera = None
+    background = (1., 1., 1., 1.)
+    n_frames = 1
 
 # Disable trimesh's logger
 logging.getLogger("trimesh").setLevel(logging.ERROR)
@@ -137,7 +141,7 @@ for i in range(args.n_sequences):
     ], dim=-1).cpu().numpy()
 
     renderables, trimesh_meshes = get_textured_objects(
-        bbox_params_t, objects_dataset, classes
+        bbox_params_t, objects_dataset, classes, query_style=args.required_style
     )
     renderables += floor_plan
     trimesh_meshes += tr_floor
@@ -199,6 +203,13 @@ for i in range(args.n_sequences):
             os.mkdir(path_to_objs)
         export_scene(path_to_objs, trimesh_meshes)
         combined = trimesh.util.concatenate(trimesh_meshes)
+        # TODO: Make mesh brighter
+        # has_vertex_colors = combined.visual.vertex_colors is not None
+        # print("has_vertex_colors", has_vertex_colors)
+        # print(combined.visual.vertex_colors.shape)
+        # for i in range(len(combined.visual.vertex_colors)):
+        #     combined.visual.vertex_colors[i] += 50
+        # combined.visual.vertex_colors
         combined.export(
             os.path.join(
                 path_to_objs,

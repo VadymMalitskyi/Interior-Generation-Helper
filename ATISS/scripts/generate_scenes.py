@@ -129,6 +129,11 @@ def main(argv):
         default=int(time.time()),
         help="The name of the file to be saved"
     )
+    parser.add_argument(
+        "--required_style",
+        default="No style",
+        help="Styles of furniture to be used"
+    )
 
     args = parser.parse_args(argv)
 
@@ -217,8 +222,9 @@ def main(argv):
             boxes["angles"]
         ], dim=-1).cpu().numpy()
 
+        print(args.required_style)
         renderables, trimesh_meshes = get_textured_objects(
-            bbox_params_t, objects_dataset, classes
+            bbox_params_t, objects_dataset, classes, query_style=args.required_style
         )
         renderables += floor_plan
         trimesh_meshes += tr_floor

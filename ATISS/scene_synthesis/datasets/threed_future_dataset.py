@@ -34,9 +34,10 @@ class ThreedFutureDataset(object):
     def _filter_objects_by_style(self, style):
         return [oi for oi in self.objects if oi.model_info.style == style]
 
-    def get_closest_furniture_to_box(self, query_label, query_size, query_style=None):
+    def get_closest_furniture_to_box(self, query_label, query_size, query_style="No style"):
         objects = self._filter_objects_by_label(query_label)
-        if query_style is not None:  # TODO: add filtering furniture style
+        print("Query label", query_label)
+        if query_style != "No style":  # TODO: add filtering furniture style
             objects = self._filter_objects_by_style(query_style)
 
         mses = {}
