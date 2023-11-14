@@ -6,6 +6,8 @@
 #          Andreas Geiger, Sanja Fidler
 # 
 
+import random
+
 import torch
 import torch.nn as nn
 
@@ -15,6 +17,23 @@ from fast_transformers.masking import LengthMask
 from .base import FixedPositionalEncoding
 from ..stats_logger import StatsLogger
 
+
+def encode_objects(required_objects, objects_list):
+    encoded_array = []
+    ban_array = []
+    for obj, count in required_objects.items():
+        if count == -1:
+            obj_index = objects_list.index(obj)
+            obj_encoding = torch.zeros([1,1,len(objects_list)])
+            obj_encoding[0, 0, obj_index] = 1
+            ban_array.append(obj_encoding)
+        if obj in objects_list:
+            obj_index = objects_list.index(obj)
+            obj_encoding = torch.zeros([1,1,len(objects_list)])
+            obj_encoding[0, 0, obj_index] = 1
+            for i in range(count):
+                encoded_array.append(obj_encoding)
+    return encoded_array, ban_array
 
 class BaseAutoregressiveTransformer(nn.Module):
     def __init__(self, input_dims, hidden2output, feature_extractor, config):
@@ -195,13 +214,17 @@ class AutoregressiveTransformer(BaseAutoregressiveTransformer):
 
         return F
 
-    def autoregressive_decode(self, boxes, room_mask):
+    def autoregressive_decode(self, boxes, room_mask, device, required_class_labels=None):
         class_labels = boxes["class_labels"]
 
         # Compute the features using the transformer
         F = self._encode(boxes, room_mask)
         # Sample the class label for the next bbbox
-        class_labels = self.hidden2output.sample_class_labels(F)
+        if required_class_labels is None:
+            class_labels = self.hidden2output.sample_class_labels(F)
+        else:
+            class_labels = required_class_labels
+            class_labels = class_labels.to(device)
         # Sample the translations
         translations = self.hidden2output.sample_translations(F, class_labels)
         # Sample the angles
@@ -222,18 +245,41 @@ class AutoregressiveTransformer(BaseAutoregressiveTransformer):
 
     # TODO: Place to do customization of number of furniture of each class
     @torch.no_grad()
-    def generate_boxes(self, room_mask, max_boxes=32, device="cpu"):
+    def generate_boxes(self, room_mask, dataset, required_objects, max_boxes=32, device="cpu"):
+        c = 0
+        # dataset.class_labels [armchair, bookshelf, cabinet ...]
+        objects_encodings, ban_encodings = encode_objects(required_objects, dataset.class_labels)
+        new_ban_encodings = []
+        for i in range(len(ban_encodings)):
+            new_ban_encodings.append(ban_encodings[i].to(device))
+        objects_encodings = random.sample(objects_encodings, len(objects_encodings))
         boxes = self.start_symbol(device)
+        prev_obj_encoding = None
         for i in range(max_boxes):
-            box = self.autoregressive_decode(boxes, room_mask=room_mask)
+            if not prev_obj_encoding is None:
+                if objects_encodings[i] == prev_obj_encoding:
+                    new_ban_encodings.append(objects_encodings[i].to(device))
+            if i < len(objects_encodings):
+                box = self.autoregressive_decode(boxes, room_mask=room_mask, required_class_labels=objects_encodings[i], device=device)
+            else:
+                box = self.autoregressive_decode(boxes, room_mask=room_mask, device=device)
+            
+            flag = False
+            for j in range(len(new_ban_encodings)):
+                if torch.equal(box["class_labels"], new_ban_encodings[j]):
+                    flag = True
+                    break
+            if flag:
+                c += 1
+                continue
 
             for k in box.keys():
                 boxes[k] = torch.cat([boxes[k], box[k]], dim=1)
 
             # Check if we have the end symbol
-            if box["class_labels"][0, 0, -1] == 1:
+            if box["class_labels"][0, 0, -1] == 1 and i > len(objects_encodings):
                 break
-
+        print("boxes_class_labels ", boxes["class_labels"])
         return {
             "class_labels": boxes["class_labels"].to("cpu"),
             "translations": boxes["translations"].to("cpu"),

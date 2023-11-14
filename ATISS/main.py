@@ -10,6 +10,7 @@ app = FastAPI()
 
 class GenerationConfig(BaseModel):
     style: str
+    required_objects: str
 
 @app.post("/generate_room")
 def generate_room(generation_config: GenerationConfig):  # file: UploadFile = File(...)
@@ -29,6 +30,7 @@ def generate_room(generation_config: GenerationConfig):  # file: UploadFile = Fi
             "--without_screen",
             "--file_save_name", file_name,
             "--required_style", generation_config.style,
+            "--required_objects", generation_config.required_objects
         ]
 
         # Run the script with subprocess

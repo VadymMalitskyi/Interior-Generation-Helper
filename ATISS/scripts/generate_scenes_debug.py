@@ -10,6 +10,7 @@
 import argparse
 import logging
 import os
+import json
 import sys
 import time
 
@@ -54,6 +55,7 @@ class args:
     with_rotating_camera = None
     background = (1., 1., 1., 1.)
     n_frames = 1
+    required_objects = '{"double_bed": 1, "wardrobe": 1, "pendant_lamp": 1, "ceiling_lamp": 1, "tv_stand": 1, "nightstand": 1}'
 
 # Disable trimesh's logger
 logging.getLogger("trimesh").setLevel(logging.ERROR)
@@ -128,9 +130,12 @@ for i in range(args.n_sequences):
         current_scene, args.path_to_floor_plan_textures
     )
 
+    required_objects = json.loads(args.required_objects)
     bbox_params = network.generate_boxes(
         room_mask=room_mask.to(device),
-        device=device
+        device=device,
+        dataset=dataset,
+        required_objects=required_objects,
     )
     boxes = dataset.post_process(bbox_params)
     bbox_params_t = torch.cat([
@@ -140,6 +145,7 @@ for i in range(args.n_sequences):
         boxes["angles"]
     ], dim=-1).cpu().numpy()
 
+    print(args.required_style)
     renderables, trimesh_meshes = get_textured_objects(
         bbox_params_t, objects_dataset, classes, query_style=args.required_style
     )

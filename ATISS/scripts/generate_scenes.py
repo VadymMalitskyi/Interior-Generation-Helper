@@ -12,6 +12,7 @@ import logging
 import os
 import sys
 import time
+import json
 
 import numpy as np
 import torch
@@ -134,6 +135,11 @@ def main(argv):
         default="No style",
         help="Styles of furniture to be used"
     )
+    parser.add_argument(
+        "--required_objects",
+        type=str,
+        help="Required objects in the scene"
+    )
 
     args = parser.parse_args(argv)
 
@@ -210,9 +216,12 @@ def main(argv):
             current_scene, args.path_to_floor_plan_textures
         )
 
+        required_objects = json.loads(args.required_objects)
         bbox_params = network.generate_boxes(
             room_mask=room_mask.to(device),
-            device=device
+            device=device,
+            dataset=dataset,
+            required_objects=required_objects,
         )
         boxes = dataset.post_process(bbox_params)
         bbox_params_t = torch.cat([
