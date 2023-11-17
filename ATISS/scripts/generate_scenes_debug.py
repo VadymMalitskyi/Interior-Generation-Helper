@@ -56,6 +56,7 @@ class args:
     background = (1., 1., 1., 1.)
     n_frames = 1
     required_objects = '{"double_bed": 1, "wardrobe": 1, "pendant_lamp": 1, "ceiling_lamp": 1, "tv_stand": 1, "nightstand": 1}'
+    with_rotating_camera = True
 
 # Disable trimesh's logger
 logging.getLogger("trimesh").setLevel(logging.ERROR)
