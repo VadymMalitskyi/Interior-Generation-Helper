@@ -104,26 +104,44 @@ def download_3d_model(
         return True
     return False
 
-def visualize_3d_bedroom(
+def visualize_custom_3d_bedroom(
     room_layout,
     style,
     *args,
 ):
     return visualize_3d_room(room_layout, style, "bedroom", *args)
 
-def visualize_3d_livingroom(
+def visualize_custom_3d_livingroom(
     room_layout,
     style,
     *args,
 ):
     return visualize_3d_room(room_layout, style, "livingroom", *args)
 
-def visualize_3d_diningroom(
+def visualize_custom_3d_diningroom(
     room_layout,
     style,
     *args,
 ):
     return visualize_3d_room(room_layout, style, "diningroom", *args)
+
+def visualize_3d_bedroom(
+    room_layout,
+    style,
+):
+    return visualize_3d_room(room_layout, style, "bedroom", *(0 for _ in range(20)))
+
+def visualize_3d_livingroom(
+    room_layout,
+    style,
+):
+    return visualize_3d_room(room_layout, style, "livingroom", *(0 for _ in range(23)))
+
+def visualize_3d_diningroom(
+    room_layout,
+    style,
+):
+    return visualize_3d_room(room_layout, style, "diningroom", *(0 for _ in range(23)))
 
 def visualize_3d_room(
     room_layout,
@@ -186,32 +204,32 @@ with gr.Blocks() as demo:
                 value="No style",
                 label="Style",
             )
-            with gr.Accordion("Set objects"):
-                armchair_bedroom = gr.Slider(-1, 5, step=1, label="armchair")
-                bookshelf_bedroom = gr.Slider(-1, 5, step=1, label="bookshelf")
-                cabinet_bedroom = gr.Slider(-1, 5, step=1, label="cabinet")
-                ceiling_lamp_bedroom = gr.Slider(-1, 5, step=1, label="ceiling_lamp")
-                chair_bedroom = gr.Slider(-1, 5, step=1, label="chair")
-                children_cabinet_bedroom = gr.Slider(-1, 5, step=1, label="children_cabinet")
-                coffee_table_bedroom = gr.Slider(-1, 5, step=1, label="coffee_table")
-                desk_bedroom = gr.Slider(-1, 5, step=1, label="desk")
-                double_bed_bedroom = gr.Slider(-1, 5, step=1, label="double_bed")
-                dressing_chair_bedroom = gr.Slider(-1, 5, step=1, label="dressing_chair")
-                dressing_table_bedroom = gr.Slider(-1, 5, step=1, label="dressing_table")
-                kids_bed_bedroom = gr.Slider(-1, 5, step=1, label="kids_bed")
-                nightstand_bedroom = gr.Slider(-1, 5, step=1, label="nightstand")
-                pendant_lamp_bedroom = gr.Slider(-1, 5, step=1, label="pendant_lamp")
-                shelf_bedroom = gr.Slider(-1, 5, step=1, label="shelf")
-                single_bed_bedroom = gr.Slider(-1, 5, step=1, label="single_bed")
-                sofa_bedroom = gr.Slider(-1, 5, step=1, label="sofa")
-                stool_bedroom = gr.Slider(-1, 5, step=1, label="stool")
-                table_bedroom = gr.Slider(-1, 5, step=1, label="table")
-                tv_stand_bedroom = gr.Slider(-1, 5, step=1, label="tv_stand")
-                wardrobe_bedroom = gr.Slider(-1, 5, step=1, label="wardrobe")
+            generate_bedroom_button = gr.Button("Generate Bedroom")
+            with gr.Accordion("Set objects", open=False):
+                armchair_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="armchair")
+                bookshelf_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="bookshelf")
+                cabinet_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="cabinet")
+                ceiling_lamp_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="ceiling_lamp")
+                chair_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="chair")
+                children_cabinet_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="children_cabinet")
+                coffee_table_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="coffee_table")
+                desk_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="desk")
+                double_bed_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="double_bed")
+                dressing_chair_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="dressing_chair")
+                dressing_table_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="dressing_table")
+                kids_bed_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="kids_bed")
+                nightstand_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="nightstand")
+                pendant_lamp_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="pendant_lamp")
+                shelf_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="shelf")
+                single_bed_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="single_bed")
+                sofa_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="sofa")
+                stool_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="stool")
+                table_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="table")
+                tv_stand_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="tv_stand")
+                wardrobe_bedroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="wardrobe")
+            generate_custom_bedroom_button = gr.Button("Generate Custom Bedroom")
         with gr.Column():
             output_model_bedroom = gr.Model3D()
-
-        generate_bedroom_button = gr.Button("Generate Bedroom")
 
     with gr.Tab("Living Room"):
         with gr.Column():
@@ -237,35 +255,36 @@ with gr.Blocks() as demo:
                 value="No style",
                 label="Style",
             )
-            with gr.Accordion("Set objects"):
-                dining_chair_livingroom = gr.Slider(-1, 5, step=1, label="dining_chair")
-                pendant_lamp_livingroom = gr.Slider(-1, 5, step=1, label="pendant_lamp")
-                coffee_table_livingroom = gr.Slider(-1, 5, step=1, label="coffee_table")
-                corner_side_table_livingroom = gr.Slider(-1, 5, step=1, label="corner_side_table")
-                dining_table_livingroom = gr.Slider(-1, 5, step=1, label="dining_table")
-                tv_stand_livingroom = gr.Slider(-1, 5, step=1, label="tv_stand")
-                multi_seat_sofa_livingroom = gr.Slider(-1, 5, step=1, label="multi_seat_sofa")
-                armchair_livingroom = gr.Slider(-1, 5, step=1, label="armchair")
-                console_table_livingroom = gr.Slider(-1, 5, step=1, label="console_table")
-                lounge_chair_livingroom = gr.Slider(-1, 5, step=1, label="lounge_chair")
-                stool_livingroom = gr.Slider(-1, 5, step=1, label="stool")
-                cabinet_livingroom = gr.Slider(-1, 5, step=1, label="cabinet")
-                bookshelf_livingroom = gr.Slider(-1, 5, step=1, label="bookshelf")
-                loveseat_sofa_livingroom = gr.Slider(-1, 5, step=1, label="loveseat_sofa")
-                ceiling_lamp_livingroom = gr.Slider(-1, 5, step=1, label="ceiling_lamp")
-                wine_cabinet_livingroom = gr.Slider(-1, 5, step=1, label="wine_cabinet")
-                l_shaped_sofa_livingroom = gr.Slider(-1, 5, step=1, label="l_shaped_sofa")
-                round_end_table_livingroom = gr.Slider(-1, 5, step=1, label="round_end_table")
-                shelf_livingroom = gr.Slider(-1, 5, step=1, label="shelf")
-                chinese_chair_livingroom = gr.Slider(-1, 5, step=1, label="chinese_chair")
-                wardrobe_livingroom = gr.Slider(-1, 5, step=1, label="wardrobe")
-                chaise_longue_sofa_livingroom = gr.Slider(-1, 5, step=1, label="chaise_longue_sofa")
-                desk_livingroom = gr.Slider(-1, 5, step=1, label="desk")
-                lazy_sofa_livingroom = gr.Slider(-1, 5, step=1, label="lazy_sofa")
+            generate_livingroom_button = gr.Button("Generate Living Room")
+            with gr.Accordion("Set objects", open=False):
+                dining_chair_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="dining_chair")
+                pendant_lamp_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="pendant_lamp")
+                coffee_table_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="coffee_table")
+                corner_side_table_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="corner_side_table")
+                dining_table_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="dining_table")
+                tv_stand_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="tv_stand")
+                multi_seat_sofa_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="multi_seat_sofa")
+                armchair_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="armchair")
+                console_table_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="console_table")
+                lounge_chair_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="lounge_chair")
+                stool_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="stool")
+                cabinet_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="cabinet")
+                bookshelf_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="bookshelf")
+                loveseat_sofa_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="loveseat_sofa")
+                ceiling_lamp_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="ceiling_lamp")
+                wine_cabinet_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="wine_cabinet")
+                l_shaped_sofa_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="l_shaped_sofa")
+                round_end_table_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="round_end_table")
+                shelf_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="shelf")
+                chinese_chair_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="chinese_chair")
+                wardrobe_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="wardrobe")
+                chaise_longue_sofa_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="chaise_longue_sofa")
+                desk_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="desk")
+                lazy_sofa_livingroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="lazy_sofa")
+            generate_custom_livingroom_button = gr.Button("Generate Custom Living Room")
         with gr.Column():
             output_model_livingroom = gr.Model3D()
 
-        generate_livingroom_button = gr.Button("Generate Living Room")
     with gr.Tab("Dining Room"):
         with gr.Column():
             room_layout_diningroom = gr.Image()
@@ -290,38 +309,62 @@ with gr.Blocks() as demo:
                 value="No style",
                 label="Style",
             )
-            with gr.Accordion("Set objects"):
-                dining_chair_diningroom = gr.Slider(-1, 5, step=1, label="dining_chair")
-                pendant_lamp_diningroom = gr.Slider(-1, 5, step=1, label="pendant_lamp")
-                dining_table_diningroom = gr.Slider(-1, 5, step=1, label="dining_table")
-                coffee_table_diningroom = gr.Slider(-1, 5, step=1, label="coffee_table")
-                corner_side_table_diningroom = gr.Slider(-1, 5, step=1, label="corner_side_table")
-                tv_stand_diningroom = gr.Slider(-1, 5, step=1, label="tv_stand")
-                console_table_diningroom = gr.Slider(-1, 5, step=1, label="console_table")
-                multi_seat_sofa_diningroom = gr.Slider(-1, 5, step=1, label="multi_seat_sofa")
-                armchair_diningroom = gr.Slider(-1, 5, step=1, label="armchair")
-                lounge_chair_diningroom = gr.Slider(-1, 5, step=1, label="lounge_chair")
-                cabinet_diningroom = gr.Slider(-1, 5, step=1, label="cabinet")
-                stool_diningroom = gr.Slider(-1, 5, step=1, label="stool")
-                bookshelf_diningroom = gr.Slider(-1, 5, step=1, label="bookshelf")
-                ceiling_lamp_diningroom = gr.Slider(-1, 5, step=1, label="ceiling_lamp")
-                wine_cabinet_diningroom = gr.Slider(-1, 5, step=1, label="wine_cabinet")
-                loveseat_sofa_diningroom = gr.Slider(-1, 5, step=1, label="loveseat_sofa")
-                l_shaped_sofa_diningroom = gr.Slider(-1, 5, step=1, label="l_shaped_sofa")
-                shelf_diningroom = gr.Slider(-1, 5, step=1, label="shelf")
-                round_end_table_diningroom = gr.Slider(-1, 5, step=1, label="round_end_table")
-                chinese_chair_diningroom = gr.Slider(-1, 5, step=1, label="chinese_chair")
-                wardrobe_diningroom = gr.Slider(-1, 5, step=1, label="wardrobe")
-                desk_diningroom = gr.Slider(-1, 5, step=1, label="desk")
-                chaise_longue_sofa_diningroom = gr.Slider(-1, 5, step=1, label="chaise_longue_sofa")
-                lazy_sofa_diningroom = gr.Slider(-1, 5, step=1, label="lazy_sofa")
+            generate_diningroom_button = gr.Button("Generate Dining Room")
+            with gr.Accordion("Set objects", open=False):
+                dining_chair_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="dining_chair")
+                pendant_lamp_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="pendant_lamp")
+                dining_table_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="dining_table")
+                coffee_table_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="coffee_table")
+                corner_side_table_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="corner_side_table")
+                tv_stand_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="tv_stand")
+                console_table_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="console_table")
+                multi_seat_sofa_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="multi_seat_sofa")
+                armchair_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="armchair")
+                lounge_chair_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="lounge_chair")
+                cabinet_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="cabinet")
+                stool_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="stool")
+                bookshelf_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="bookshelf")
+                ceiling_lamp_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="ceiling_lamp")
+                wine_cabinet_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="wine_cabinet")
+                loveseat_sofa_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="loveseat_sofa")
+                l_shaped_sofa_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="l_shaped_sofa")
+                shelf_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="shelf")
+                round_end_table_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="round_end_table")
+                chinese_chair_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="chinese_chair")
+                wardrobe_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="wardrobe")
+                desk_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="desk")
+                chaise_longue_sofa_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="chaise_longue_sofa")
+                lazy_sofa_diningroom = gr.Dropdown([-1, 0, 1, 2, 3], value=-1, label="lazy_sofa")
+            generate_custom_diningroom_button = gr.Button("Generate Custom Dining Room")
         with gr.Column():
             output_model_diningroom = gr.Model3D()
 
-        generate_diningroom_button = gr.Button("Generate Dining Room")
-
     generate_bedroom_button.click(
         visualize_3d_bedroom,
+        inputs=[
+            room_layout_bedroom,
+            style_bedroom,
+        ],
+        outputs=output_model_bedroom,
+    )
+    generate_livingroom_button.click(
+        visualize_3d_livingroom,
+        inputs=[
+            room_layout_livingroom,
+            style_livingroom,
+        ],
+        outputs=output_model_livingroom,
+    )
+    generate_diningroom_button.click(
+        visualize_3d_diningroom,
+        inputs=[
+            room_layout_diningroom,
+            style_diningroom,
+        ],
+        outputs=output_model_diningroom,
+    )
+    generate_custom_bedroom_button.click(
+        visualize_custom_3d_bedroom,
         inputs=[
             room_layout_bedroom,
             style_bedroom,
@@ -349,8 +392,8 @@ with gr.Blocks() as demo:
         ],
         outputs=output_model_bedroom,
     )
-    generate_livingroom_button.click(
-        visualize_3d_livingroom,
+    generate_custom_livingroom_button.click(
+        visualize_custom_3d_livingroom,
         inputs=[
             room_layout_livingroom,
             style_livingroom,
@@ -381,8 +424,8 @@ with gr.Blocks() as demo:
         ],
         outputs=output_model_livingroom,
     )
-    generate_diningroom_button.click(
-        visualize_3d_diningroom,
+    generate_custom_diningroom_button.click(
+        visualize_custom_3d_diningroom,
         inputs=[
             room_layout_diningroom,
             style_diningroom,
