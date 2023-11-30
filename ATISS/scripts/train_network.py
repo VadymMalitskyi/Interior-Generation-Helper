@@ -188,6 +188,8 @@ def main(argv):
         augmentations=None,
         split=config["validation"].get("splits", ["test"])
     )
+    print(f"Train dataset length: {len(train_dataset)}")
+    print(f"Validation dataset length: {len(validation_dataset)}")
 
     train_loader = DataLoader(
         train_dataset,

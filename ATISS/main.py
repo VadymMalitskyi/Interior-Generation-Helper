@@ -15,19 +15,25 @@ from typing_extensions import Annotated
 app = FastAPI()
 
 bedroom_saved_info = {
-    "images_path": "/home/vadym_wsl/projects/Interior-Generation-Helper/images_list.pkl",
-    "names_path": "/home/vadym_wsl/projects/Interior-Generation-Helper/names_list.pkl",
+    "images_path": "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/processed_layout_img/bedroom/images_list.pkl",
+    "names_path": "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/processed_layout_img/bedroom/names_list.pkl",
 }
-livingroom_saved_info = {  # TODO: fill later
-    "images_path": "",
-    "names_path": "",
+livingroom_saved_info = {
+    "images_path": "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/processed_layout_img/livingroom/images_list.pkl",
+    "names_path": "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/processed_layout_img/livingroom/names_list.pkl",
+}
+diningroom_saved_info = {
+    "images_path": "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/processed_layout_img/diningroom/images_list.pkl",
+    "names_path": "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/processed_layout_img/diningroom/names_list.pkl",
 }
 
 
 def get_room_id(image_arr: np.ndarray, room_type: str) -> str:
-    existing_rooms_info = (
-        bedroom_saved_info if room_type == "bedroom" else livingroom_saved_info
-    )
+    existing_rooms_info = bedroom_saved_info
+    if room_type == "livingroom":
+        existing_rooms_info = livingroom_saved_info
+    elif room_type == "diningroom":
+        existing_rooms_info = diningroom_saved_info
     with open(existing_rooms_info["images_path"], "rb") as f:
         images = pickle.load(f)
 
@@ -60,9 +66,17 @@ def generate_room(
         room_id = get_room_id(image_arr=np.array(layout_image), room_type=room_type)
         print("Image shape: ", np.array(layout_image).shape)
         if room_type == "bedroom":
-            weights_path = "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/trained_models/L1F6VFKD0/model_01000"
+            weights_path = "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/trained_models/0ZTXKZJKD/model_03300"
+            config_path = "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/config/bedrooms_config.yaml"
+            threed_model_path = "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/pickle_data/threed_future_model_bedroom.pkl"
+        elif room_type == "livingroom":
+            weights_path = "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/trained_models/DTPI0WWZE/model_04000"
+            config_path = "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/config/living_rooms_config.yaml"
+            threed_model_path = "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/pickle_data/threed_future_model_livingroom.pkl"
         else:
-            weights_path = None  # TODO: add weights for living room
+            weights_path = "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/trained_models/SSLGRLG5N/model_03500"
+            config_path = "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/config/dining_rooms_config.yaml"
+            threed_model_path = "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/pickle_data/threed_future_model_diningroom.pkl"
 
         file_name = str(int(time.time()))
         script_name = "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/scripts/generate_scenes.py"
@@ -70,9 +84,9 @@ def generate_room(
         command = [
             "python",
             script_name,
-            "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/config/bedrooms_config.yaml",
+            config_path,
             "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/visualizations",
-            "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/data/pickle_data/threed_future_model_bedroom.pkl",
+            threed_model_path,
             "/home/vadym_wsl/projects/Interior-Generation-Helper/ATISS/demo/floor_plan_texture_images",
             "--weight_file",
             weights_path,
